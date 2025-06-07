@@ -1,40 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Send to n8n</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Save Info</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple-50: #faf5ff;
+      --purple-100: #f3e8ff;
+      --purple-200: #e9d5ff;
+      --purple-400: #c084fc;
+      --purple-600: #9333ea;
+      --purple-700: #7c3aed;
+      --purple-800: #6b21a8;
+      --purple-900: #581c87;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--purple-50), var(--purple-100));
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .form-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(147, 51, 234, 0.1);
+      border: 1px solid var(--purple-200);
+      width: 100%;
+      max-width: 400px;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .form-header {
+      padding: 2rem 2rem 1rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--purple-50), white);
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--purple-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-description {
+      color: var(--purple-600);
+      font-size: 0.875rem;
+    }
+
+    .form-content {
+      padding: 1rem 2rem 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--purple-800);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--purple-200);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: white;
+      transition: 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--purple-400);
+      box-shadow: 0 0 0 3px rgba(196, 132, 252, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .save-button {
+      width: 100%;
+      background: var(--purple-600);
+      color: white;
+      border: none;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .save-button:hover {
+      background: var(--purple-700);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <h1>Send Data</h1>
+  <div class="form-container">
+    <div class="form-header">
+      <h1 class="form-title">Save Info</h1>
+      <p class="form-description">Enter your details and click save</p>
+    </div>
 
-  <label for="field1">Field 1:</label><br />
-  <input type="text" id="field1" placeholder="Type something..." /><br /><br />
+    <div class="form-content">
+      <form id="saveForm">
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Janet" required />
+        </div>
 
-  <label for="field2">Field 2:</label><br />
-  <input type="text" id="field2" placeholder="Type something else..." /><br /><br />
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="e.g. janet@email.com" required />
+        </div>
 
-  <button onclick="saveData()">Save</button>
+        <button type="submit" class="save-button">Save</button>
+      </form>
+    </div>
+  </div>
 
   <script>
-    function saveData() {
-      const field1 = document.getElementById("field1").value;
-      const field2 = document.getElementById("field2").value;
+    document.getElementById('saveForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
 
       fetch("https://n8n.YOURDOMAIN.com/webhook/YOUR-WEBHOOK", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          field1: field1,
-          field2: field2
-        })
+        body: JSON.stringify({ name, email })
       })
       .then(response => {
         if (response.ok) {
-          alert("Saved!");
+          alert("✅ Info sent successfully!");
         } else {
-          alert("Failed to save.");
+          alert("❌ Failed to send.");
         }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("🚨 Something went wrong.");
       });
-    }
+    });
   </script>
 </body>
 </html>
